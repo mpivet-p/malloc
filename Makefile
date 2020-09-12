@@ -6,7 +6,7 @@
 #    By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/22 02:45:47 by mpivet-p          #+#    #+#              #
-#    Updated: 2020/09/12 14:42:34 by mpivet-p         ###   ########.fr        #
+#    Updated: 2020/09/12 16:15:36 by mpivet-p         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,8 +22,8 @@ INC_PATH= includes/
 SRC_PATH= srcs/
 OBJ_PATH= obj/
 
-INC_NAME= malloc.h
-SRC_NAME= 
+INC_NAME= libft_malloc.h
+SRC_NAME= free.c malloc.c realloc.c show_alloc_mem.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
 INC= -I includes/ -I libft/inc/
@@ -39,7 +39,7 @@ all: $(NAME)
 $(NAME): $(OBJ)
 	@make -C libft
 	$(CC) $(CFLAGS) -shared -o $(NAME) $(OBJ) $(INC) $(LIBS)
-	ln -s libft_malloc.so libft_malloc_$(HOSTTYPE).so
+	ln -sf libft_malloc.so libft_malloc_$(HOSTTYPE).so
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir $(OBJ_PATH) 2> /dev/null || true
@@ -51,6 +51,6 @@ clean:
 
 fclean: clean
 	@make -C libft fclean
-	@rm -rf $(NAME) server
+	@rm -rf $(NAME) libft_malloc_$(HOSTTYPE).so
 
 re: fclean all
