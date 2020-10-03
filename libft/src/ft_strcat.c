@@ -6,11 +6,11 @@
 /*   By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/07 18:24:15 by mpivet-p          #+#    #+#             */
-/*   Updated: 2019/02/04 13:41:36 by mpivet-p         ###   ########.fr       */
+/*   Updated: 2020/09/13 11:04:52 by mpivet-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-char	*ft_strcat(char *restrict s1, const char *restrict s2)
+char	*ft_strcat(char *s1, const char *s2)
 {
 	int i;
 	int j;

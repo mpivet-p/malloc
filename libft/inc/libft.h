@@ -6,7 +6,7 @@
 /*   By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/09 18:44:21 by mpivet-p          #+#    #+#             */
-/*   Updated: 2020/06/08 19:08:38 by mpivet-p         ###   ########.fr       */
+/*   Updated: 2020/09/13 11:04:19 by mpivet-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,14 @@ char			**ft_sort_params(char **argv);
 char			*ft_strbchr(char *str, char c);
 char			*ft_itoa(int n);
 char			*ft_strinsert(char *str, char *insertion, size_t location);
-char			*ft_strcat(char *restrict s1, const char *restrict s2);
+char			*ft_strcat(char *s1, const char *s2);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strcpy(char *dst, const char *src);
 char			*ft_strdup(const char *s1);
 char			*ft_strjoin(char const *s1, char const *s2);
 char			*ft_strmap(char const *s, char (*f)(char));
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
-char			*ft_strncat(char *restrict s1, const char *restrict s2,
+char			*ft_strncat(char *s1, const char *s2,
 		size_t n);
 char			*ft_strncpy(char *dst, const char *src, size_t len);
 char			*ft_strnew(size_t size);
@@ -71,7 +71,7 @@ int				ft_strnequ(char const *s1, char const *s2, size_t n);
 int				ft_tolower(int c);
 int				ft_toupper(int c);
 int				ft_cat_buffer(char *buffer, char *tocopy, int i);
-size_t			ft_strlcat(char *restrict dst, const char *restrict src,
+size_t			ft_strlcat(char *dst, const char *src,
 		size_t size);
 size_t			ft_strlen(const char *str);
 t_list			*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));

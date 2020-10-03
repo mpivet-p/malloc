@@ -6,7 +6,7 @@
 #    By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/22 02:45:47 by mpivet-p          #+#    #+#              #
-#    Updated: 2020/09/12 16:15:36 by mpivet-p         ###   ########.fr        #
+#    Updated: 2020/10/03 14:09:37 by mpivet-p         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,14 +16,14 @@ endif
 
 NAME= libft_malloc.so
 CC= gcc
-CFLAGS= -Wall -Wextra -Werror -g
+CFLAGS= -Wall -Wextra -Werror -std=c90 -g
 
 INC_PATH= includes/
 SRC_PATH= srcs/
 OBJ_PATH= obj/
 
 INC_NAME= libft_malloc.h
-SRC_NAME= free.c malloc.c realloc.c show_alloc_mem.c
+SRC_NAME= malloc.c #free.c realloc.c show_alloc_mem.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
 INC= -I includes/ -I libft/inc/

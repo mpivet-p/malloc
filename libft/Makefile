@@ -6,13 +6,13 @@
 #    By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/07/02 22:00:41 by mpivet-p          #+#    #+#              #
-#    Updated: 2020/06/08 19:12:27 by mpivet-p         ###   ########.fr        #
+#    Updated: 2020/09/13 11:03:21 by mpivet-p         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME= libft.a
 CC= gcc
-CFLAGS= -Wall -Wextra -Werror
+CFLAGS= -Wall -Wextra -Werror -std=c90
 
 INC_PATH= inc/
 SRC_PATH= src/
