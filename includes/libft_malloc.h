@@ -6,7 +6,7 @@
 /*   By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/12 16:20:58 by mpivet-p          #+#    #+#             */
-/*   Updated: 2020/10/03 14:41:51 by mpivet-p         ###   ########.fr       */
+/*   Updated: 2020/10/03 16:42:08 by mpivet-p         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 # define TRUE	1
 # define FALSE	0
 
-void	*malloc(size_t size);
+void	*ft_malloc(size_t size);
 /*void	free(void *ptr);
 void	*realloc(void *ptr, size_t size);
 */
