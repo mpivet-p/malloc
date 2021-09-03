@@ -6,7 +6,7 @@
 #    By: mpivet-p <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/22 02:45:47 by mpivet-p          #+#    #+#              #
-#    Updated: 2020/10/03 14:09:37 by mpivet-p         ###   ########.fr        #
+#    Updated: 2021/08/09 16:04:16 by mpivet-p         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ endif
 
 NAME= libft_malloc.so
 CC= gcc
-CFLAGS= -Wall -Wextra -Werror -std=c90 -g
+CFLAGS= -Wall -Wextra -Werror -std=c99 -g
 
 INC_PATH= includes/
 SRC_PATH= srcs/
