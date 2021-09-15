@@ -13,71 +13,89 @@
 #include <sys/mman.h>
 #include "libft_malloc.h"
 #include "libft.h"
-
 #include <stdio.h>
 
-static void	*get_free_block(t_page *heap, size_t size)
-{
-	t_block	*block;
+t_page *g_heap = NULL;
 
-	block = (t_block*)(heap + sizeof(t_page));
-	while (block != NULL)
-	{
-		if (block->freed == TRUE
-				&& block->size >= size + sizeof(t_block))
-			return ((void*)block);
-		block = block->next;
-	}
-	return (NULL);
+static size_t	get_page_size(size_t size)
+{
+	if (size <= TINY_CHUNK_SIZE)
+		return (TINY_HEAP_SIZE);
+	else if (size <= SMALL_CHUNK_SIZE)
+		return (SMALL_HEAP_SIZE);
+	return ((size / PAGE_SIZE) + 1);
 }
 
-static void	*is_enough_mem(t_page *heap, size_t size)
+static size_t	get_page_type(size_t size)
 {
-	size_t	min_heap_size;
-	t_block	*block;
+	if (size <= TINY_CHUNK_SIZE)
+		return (TINY_PAGE);
+	else if (size <= SMALL_CHUNK_SIZE)
+		return (SMALL_PAGE);
+	return (LARGE_PAGE);
+}
 
-	if (size <= TINY_BLOCK_SIZE)
-		min_heap_size = TINY_HEAP_SIZE;
-	else if (size <= SMALL_BLOCK_SIZE)
-		min_heap_size = TINY_HEAP_SIZE;
-	while (heap != NULL)
+static void	*get_available_chunk(t_page *heap, size_t size, t_chunk **ret_chunk)
+{
+	size_t	page_type;
+	t_chunk *chunk;
+
+	page_type = get_page_type(size);
+	while (heap)
 	{
-		printf("page address : %p page size : %lu  block avalaible %d\n", heap, heap->size, heap->block_available);
-		if (heap->size == min_heap_size && heap->block_available == TRUE
-				&& (block = get_free_block(heap, size)) != NULL)
-			return (block);
+		if (heap->type == page_type && heap->chunks_available > 0)
+		{
+			printf("Page found at %p\n", heap);
+			chunk = heap->first_chunk;
+			while (chunk && chunk->available != TRUE)
+			{
+				chunk = chunk->next;
+			}
+			if (chunk && chunk->available == TRUE)
+			{
+				*ret_chunk = chunk;
+				return (heap);
+			}
+		}
 		heap = heap->next;
 	}
 	return (NULL);
 }
 
-/*
-**	SEGV : block ptr is not modified (block = null)
-*/
-
-static void	*get_new_heap(t_page **heap, t_page *ptr, size_t heap_size)
+static void init_chunks(t_page *page_ptr)
 {
-	t_block	*new_block;
+	t_chunk *ptr;
 
-	printf("heap page address is : %p\n", ptr);
-	ptr->next = NULL;
-	ptr->first_block = (t_block*)(ptr + sizeof(t_page));
-	ptr->size = heap_size;
-	ptr->blocks = 0;
-	ptr->block_available = 1;
-	new_block = (t_block*)(ptr + sizeof(t_page));
-	new_block->size = heap_size - sizeof(t_page) - sizeof(t_block);
-	new_block->freed = TRUE;
-	new_block->next = NULL;
-	if (*heap != NULL)
+	ptr = (t_chunk*)(page_ptr + sizeof(t_page));
+	for (size_t i = 0; i < 99; i++)
 	{
-		while ((*heap)->next != NULL)
-			*heap = (*heap)->next;
-		(*heap)->next = ptr;
+		ptr[i] = (t_chunk){&(ptr[i + 1]), page_ptr + ALLOC_ZONE_START + (sizeof(t_chunk) * i), TRUE, ""};
+	}
+	ptr[99] = (t_chunk){NULL, page_ptr + ALLOC_ZONE_START + (sizeof(t_chunk) * 99), TRUE, ""};
+}
+
+static void *set_new_page(t_page **heap, t_page *page_ptr, size_t page_size, size_t alloc_size)
+{
+	t_page *ptr = NULL;
+
+	*page_ptr = (t_page){NULL, (t_chunk*)(page_ptr + sizeof(t_page)), page_size, 100, 100, get_page_type(alloc_size), ""};
+	if (alloc_size <= SMALL_CHUNK_SIZE)
+		init_chunks(page_ptr);
+	if (*heap == NULL)
+	{
+		printf("main heap initialized: %p\n", page_ptr);
+		*heap = page_ptr;
 	}
 	else
-		(*heap) = ptr;
-	return (ptr);
+	{
+		ptr = *heap;
+		while (ptr->next != NULL)
+		{
+			ptr = ptr->next;
+		}
+		ptr->next = page_ptr;
+	}
+	return (page_ptr);
 }
 
 static void	*get_mem_page(t_page **heap, size_t size)
@@ -85,59 +103,45 @@ static void	*get_mem_page(t_page **heap, size_t size)
 	size_t	heap_size;
 	void	*ptr;
 
-	if (size <= TINY_BLOCK_SIZE)
-		heap_size = TINY_HEAP_SIZE;
-	else if (size <= SMALL_BLOCK_SIZE)
-		heap_size = SMALL_HEAP_SIZE;
-	else
-		heap_size = (size / PAGE_SIZE) + 1;
-	ptr = mmap(NULL, heap_size, PROT_READ | PROT_WRITE
-			, MAP_PRIVATE | MAP_ANON, -1, 0);
-	if (ptr == MAP_FAILED)
+	heap_size = get_page_size(size);
+	if ((ptr = mmap(NULL, heap_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED)
 		return (NULL);
-	return(get_new_heap(heap, (t_page*)ptr, heap_size));
+	return(set_new_page(heap, (t_page*)ptr, heap_size, size));
 }
 
-static void	*alloc_block(t_block *block, size_t size)
+static void	*alloc_chunk(t_page *heap, size_t size, t_chunk *chunk)
 {
-	t_block	new_block;
-
-	printf("Allocating a block of size : %lu", size);
-	new_block.size = block->size - (size + sizeof(t_block));
-	new_block.next = block->next;
-	block->next = block + sizeof(t_block) + size;
-	block->size = size;
-	ft_memcpy(block + sizeof(t_block), &new_block, sizeof(t_block));
-	return (block + sizeof(t_block));
+	printf("Allocating a block of size : %lu\n", size);
+	heap->chunks_available--;
+	chunk->available = FALSE;
+	return (chunk->data);
 }
 
 void		*ft_malloc(size_t size)
 {
-	static t_page	*heap;
-	t_block			*block;
+	t_page			*alloc_heap = NULL;
+	t_chunk			*chunk = NULL;
 
-	printf("\n=========[ NEW.MALLOC.CALL ] =========\n");
+  	write(1, "=========[ NEW.MALLOC.CALL ]=========\n", 38);
 	if (size > 0)
 	{
-		printf("size = %lu, checking if a page contains enough space...\n", size);
-		if ((block = is_enough_mem(heap, size)) == NULL)
+		printf("checking if a page contains enough space...\n");
+		if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
 		{
-			printf("Not enough space, requesting new mem page to mmap...\n");
-			if (get_mem_page(&heap, size) == NULL)
+			printf("Not enough space, calling mmap...\n");
+			if (get_mem_page(&g_heap, size) == NULL)
 					
 			{
 				printf("mmap failed, returning NULL\n");
 				return (NULL);
 			}
-			printf("main heap : %p\n", heap);
-			if ((block = is_enough_mem(heap, size)) == NULL)
+			if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
 			{
-				printf("Still not enough memory\n");
+				printf("Still not enough memory, returning NULL\n");
 				return (NULL);
 			}
 		}
-		return (alloc_block(block, size));
+		return (alloc_chunk(alloc_heap, size, chunk));
 	}
-	printf("size(%lu) <= 0 \n", size);
 	return (NULL);
 }

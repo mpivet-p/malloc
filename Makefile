@@ -15,7 +15,7 @@ ifeq ($(HOSTTYPE), $(NAME))
 endif
 
 NAME= libft_malloc.so
-CC= gcc
+CC= clang
 CFLAGS= -Wall -Wextra -Werror -std=c99 -g
 
 INC_PATH= includes/
@@ -23,7 +23,7 @@ SRC_PATH= srcs/
 OBJ_PATH= obj/
 
 INC_NAME= libft_malloc.h
-SRC_NAME= malloc.c #free.c realloc.c show_alloc_mem.c
+SRC_NAME= malloc.c free.c #realloc.c show_alloc_mem.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
 INC= -I includes/ -I libft/inc/
@@ -34,16 +34,19 @@ LIBS= -L libft/ -lft
 .PHONY: all clean fclean re local
 
 all: $(NAME)
-	@:
 
 $(NAME): $(OBJ)
 	@make -C libft
-	$(CC) $(CFLAGS) -shared -o $(NAME) $(OBJ) $(INC) $(LIBS)
+	$(CC) $(CFLAGS) -shared -Wl,-soname,libft_malloc.so -o $(NAME) $(OBJ) $(INC) $(LIBS)
 	ln -sf libft_malloc.so libft_malloc_$(HOSTTYPE).so
+
+test:
+	@$(CC) -Iincludes -Ilibft/inc -g -o small_test small_test.c srcs/malloc.c srcs/free.c libft/libft.a
+	@./small_test
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir $(OBJ_PATH) 2> /dev/null || true
-	$(CC) $(CFLAGS) $(INC) -o $@ -c -fPIC $<
+	$(CC) $(CFLAGS) -fPIC $(INC) -o $@ -c $<
 
 clean:
 	@make -C libft clean

@@ -17,39 +17,45 @@
 # include <stdint.h>
 
 # define PAGE_SIZE			4096
-# define TINY_HEAP_SIZE		16384
-# define TINY_HEAP			0
-# define TINY_BLOCK_SIZE	128
-# define SMALL_HEAP_SIZE	65536
-# define SMALL_BLOCK_SIZE	512
-# define SMALL_HEAP			1
-# define LARGE_HEAP			2
+# define TINY_HEAP_SIZE		PAGE_SIZE * 3
+# define SMALL_HEAP_SIZE	PAGE_SIZE * 14
+
+# define ALLOC_ZONE_START	2448
+
+# define MAP_ANONYMOUS		0x20
+
+# define TINY_CHUNK_SIZE	64
+# define SMALL_CHUNK_SIZE	512
+
+# define TINY_PAGE			0
+# define SMALL_PAGE			1
+# define LARGE_PAGE			2
 
 # define TRUE	1
 # define FALSE	0
 
 void	*ft_malloc(size_t size);
-/*void	free(void *ptr);
-void	*realloc(void *ptr, size_t size);
+void	ft_free(void *ptr);
+/*void	*realloc(void *ptr, size_t size);
 */
 
 typedef struct	s_page
 {
 	struct s_page	*next;
-	struct s_block	*first_block;
+	struct s_chunk	*first_chunk;
 	size_t			size;
-	size_t			blocks;
-	uint8_t			block_available;
+	size_t			chunks;
+	uint8_t			chunks_available;
 	uint8_t			type;
-	char			c[2];
+	char			c[10];
 }				t_page;
 
-typedef struct	s_block
+typedef struct	s_chunk
 {
-	struct s_block	*next;
-	uint16_t		size;
-	uint8_t			freed;
-	char			c;
-}				t_block;
+	struct s_chunk	*next;
+	void			*data;
+	uint8_t			available;
+	char			c[3];
+}				t_chunk;
 
 #endif

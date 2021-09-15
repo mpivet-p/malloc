@@ -11,8 +11,11 @@
 /* ************************************************************************** */
 
 #include "libft_malloc.h"
+#include <stdio.h>
 
-void	free(void *ptr)
+extern t_page *g_heap;
+
+void	ft_free(void *ptr)
 {
 	(void)ptr;
 }

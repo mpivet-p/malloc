@@ -15,6 +15,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <string.h>
+# include <stdint.h>
 # include "get_next_line.h"
 # define BF_SIZE 8162
 
