@@ -17,22 +17,10 @@
 
 t_page *g_heap = NULL;
 
-static size_t	get_page_size(size_t size)
+void print_page_type(int type)
 {
-	if (size <= TINY_CHUNK_SIZE)
-		return (TINY_HEAP_SIZE);
-	else if (size <= SMALL_CHUNK_SIZE)
-		return (SMALL_HEAP_SIZE);
-	return ((size / PAGE_SIZE) + 1);
-}
-
-static size_t	get_page_type(size_t size)
-{
-	if (size <= TINY_CHUNK_SIZE)
-		return (TINY_PAGE);
-	else if (size <= SMALL_CHUNK_SIZE)
-		return (SMALL_PAGE);
-	return (LARGE_PAGE);
+	static char *page_type[] = {"TINY_PAGE", "SMALL_PAGE", "LARGE_PAGE"};	
+	printf("Requested %s\n", page_type[type]);
 }
 
 static void	*get_available_chunk(t_page *heap, size_t size, t_chunk **ret_chunk)
@@ -47,14 +35,14 @@ static void	*get_available_chunk(t_page *heap, size_t size, t_chunk **ret_chunk)
 		{
 			printf("Page found at %p\n", heap);
 			chunk = heap->first_chunk;
-			while (chunk && chunk->available != TRUE)
+			while (chunk)
 			{
+				if (chunk->available == TRUE)
+				{
+					*ret_chunk = chunk;
+					return (heap);
+				}
 				chunk = chunk->next;
-			}
-			if (chunk && chunk->available == TRUE)
-			{
-				*ret_chunk = chunk;
-				return (heap);
 			}
 		}
 		heap = heap->next;
@@ -62,25 +50,24 @@ static void	*get_available_chunk(t_page *heap, size_t size, t_chunk **ret_chunk)
 	return (NULL);
 }
 
-static void init_chunks(t_page *page_ptr)
+static void init_chunks(t_page *page_ptr, size_t chunks_nbr)
 {
-	t_chunk *ptr;
+	size_t	alloc_zone_start = sizeof(t_page) + (sizeof(t_chunk) * chunks_nbr);
+	t_chunk	*ptr;
 
 	ptr = (t_chunk*)(page_ptr + sizeof(t_page));
-	for (size_t i = 0; i < 99; i++)
+	printf("%zu\n", alloc_zone_start);
+	for (size_t i = 0; i < chunks_nbr - 1; i++)
 	{
-		ptr[i] = (t_chunk){&(ptr[i + 1]), page_ptr + ALLOC_ZONE_START + (sizeof(t_chunk) * i), TRUE, ""};
+		ptr[i] = (t_chunk){&(ptr[i + 1]), page_ptr + alloc_zone_start + (sizeof(t_chunk) * i), TRUE, 4242, 0};
 	}
-	ptr[99] = (t_chunk){NULL, page_ptr + ALLOC_ZONE_START + (sizeof(t_chunk) * 99), TRUE, ""};
+	ptr[chunks_nbr - 1] = (t_chunk){NULL, page_ptr + alloc_zone_start + (sizeof(t_chunk) * 99), TRUE, 4242, 0};
 }
 
-static void *set_new_page(t_page **heap, t_page *page_ptr, size_t page_size, size_t alloc_size)
+static void append_heap_ptr(t_page **heap, t_page *page_ptr)
 {
-	t_page *ptr = NULL;
+	t_page	*ptr = NULL;
 
-	*page_ptr = (t_page){NULL, (t_chunk*)(page_ptr + sizeof(t_page)), page_size, 100, 100, get_page_type(alloc_size), ""};
-	if (alloc_size <= SMALL_CHUNK_SIZE)
-		init_chunks(page_ptr);
 	if (*heap == NULL)
 	{
 		printf("main heap initialized: %p\n", page_ptr);
@@ -95,6 +82,25 @@ static void *set_new_page(t_page **heap, t_page *page_ptr, size_t page_size, siz
 		}
 		ptr->next = page_ptr;
 	}
+}
+
+static void *set_new_page(t_page **heap, t_page *page_ptr, size_t page_size, size_t alloc_size)
+{
+	t_chunk	*first_chunk = (t_chunk*)(page_ptr + sizeof(t_page));
+	int		page_type = get_page_type(alloc_size);
+
+	if (page_type == TINY_PAGE || page_type == SMALL_PAGE)
+	{
+		*page_ptr = (t_page){NULL, first_chunk, page_size, 100, 100, page_type, 4242};
+		init_chunks(page_ptr, 100);
+	}
+	else // page_type == LARGE_PAGE
+	{
+		*page_ptr = (t_page){NULL, first_chunk, page_size, 1, 1, LARGE_PAGE, 4242};
+		init_chunks(page_ptr, 1);
+	}
+	print_page_type(page_ptr->type);
+	append_heap_ptr(heap, page_ptr);
 	return (page_ptr);
 }
 
@@ -109,9 +115,8 @@ static void	*get_mem_page(t_page **heap, size_t size)
 	return(set_new_page(heap, (t_page*)ptr, heap_size, size));
 }
 
-static void	*alloc_chunk(t_page *heap, size_t size, t_chunk *chunk)
+static void	*alloc_chunk(t_page *heap, t_chunk *chunk)
 {
-	printf("Allocating a block of size : %lu\n", size);
 	heap->chunks_available--;
 	chunk->available = FALSE;
 	return (chunk->data);
@@ -123,6 +128,7 @@ void		*ft_malloc(size_t size)
 	t_chunk			*chunk = NULL;
 
   	write(1, "=========[ NEW.MALLOC.CALL ]=========\n", 38);
+	printf("requested %zu bytes to malloc\n", size);
 	if (size > 0)
 	{
 		printf("checking if a page contains enough space...\n");
@@ -130,7 +136,6 @@ void		*ft_malloc(size_t size)
 		{
 			printf("Not enough space, calling mmap...\n");
 			if (get_mem_page(&g_heap, size) == NULL)
-					
 			{
 				printf("mmap failed, returning NULL\n");
 				return (NULL);
@@ -141,7 +146,7 @@ void		*ft_malloc(size_t size)
 				return (NULL);
 			}
 		}
-		return (alloc_chunk(alloc_heap, size, chunk));
+		return (alloc_chunk(alloc_heap, chunk));
 	}
 	return (NULL);
 }

@@ -20,8 +20,6 @@
 # define TINY_HEAP_SIZE		PAGE_SIZE * 3
 # define SMALL_HEAP_SIZE	PAGE_SIZE * 14
 
-# define ALLOC_ZONE_START	2448
-
 # define MAP_ANONYMOUS		0x20
 
 # define TINY_CHUNK_SIZE	64
@@ -38,6 +36,8 @@ void	*ft_malloc(size_t size);
 void	ft_free(void *ptr);
 /*void	*realloc(void *ptr, size_t size);
 */
+size_t	get_page_size(size_t size);
+int		get_page_type(size_t size);
 
 typedef struct	s_page
 {
@@ -47,7 +47,7 @@ typedef struct	s_page
 	size_t			chunks;
 	uint8_t			chunks_available;
 	uint8_t			type;
-	char			c[10];
+	uint16_t		canary;
 }				t_page;
 
 typedef struct	s_chunk
@@ -55,7 +55,8 @@ typedef struct	s_chunk
 	struct s_chunk	*next;
 	void			*data;
 	uint8_t			available;
-	char			c[3];
+	uint16_t		canary;
+	char			c;
 }				t_chunk;
 
 #endif

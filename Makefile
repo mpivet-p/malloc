@@ -23,7 +23,7 @@ SRC_PATH= srcs/
 OBJ_PATH= obj/
 
 INC_NAME= libft_malloc.h
-SRC_NAME= malloc.c free.c #realloc.c show_alloc_mem.c
+SRC_NAME= malloc.c free.c utils.c #realloc.c show_alloc_mem.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
 INC= -I includes/ -I libft/inc/
@@ -40,8 +40,8 @@ $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) -shared -Wl,-soname,libft_malloc.so -o $(NAME) $(OBJ) $(INC) $(LIBS)
 	ln -sf libft_malloc.so libft_malloc_$(HOSTTYPE).so
 
-test:
-	@$(CC) -Iincludes -Ilibft/inc -g -o small_test small_test.c srcs/malloc.c srcs/free.c libft/libft.a
+test: $(OBJ)
+	@$(CC) $(INC) -g $(OBJ) $(LIBS) -o small_test small_test.c 
 	@./small_test
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -50,7 +50,7 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 
 clean:
 	@make -C libft clean
-	@rm -rf $(OBJ_PATH)
+	@rm -rf $(OBJ_PATH) small_test
 
 fclean: clean
 	@make -C libft fclean

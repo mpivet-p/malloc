@@ -17,5 +17,14 @@ extern t_page *g_heap;
 
 void	ft_free(void *ptr)
 {
-	(void)ptr;
+	t_page *page_ptr = g_heap;
+	while (page_ptr)
+	{
+		printf("%p\n", page_ptr);
+		if (ptr > (void*)page_ptr && ptr < (void*)(page_ptr + page_ptr->size))
+		{
+			printf("FOUND\n");
+		}
+		page_ptr = page_ptr->next;
+	}
 }
