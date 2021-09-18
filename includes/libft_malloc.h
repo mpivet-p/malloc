@@ -48,6 +48,7 @@ typedef struct	s_page
 	uint8_t			chunks_available;
 	uint8_t			type;
 	uint16_t		canary;
+	char			c[8];
 }				t_page;
 
 typedef struct	s_chunk
