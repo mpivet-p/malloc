@@ -37,6 +37,9 @@ SRC_NAME = ft_atoi.c ft_atol.c ft_base_size.c ft_bzero.c ft_isalnum.c \
 	tabdup.c tab_realloc.c ft_clamp.c ft_max.c ft_tabdel.c ft_tablen.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
+#
+REMV= -fPIC
+
 INC= -I inc/
 SRC= $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ= $(addprefix $(OBJ_PATH), $(OBJ_NAME))
@@ -56,7 +59,7 @@ $(NAME): $(OBJ)
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	@mkdir $(OBJ_PATH) 2> /dev/null || true
-	$(CC) $(CFLAGS) $(INC) -o $@ -c $<
+	$(CC) $(CFLAGS) $(REMV) $(INC) -o $@ -c $<
 
 clean:
 	@rm -rf $(OBJ_PATH)

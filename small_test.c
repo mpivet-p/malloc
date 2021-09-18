@@ -18,12 +18,13 @@ int	main(void)
 {
 	char *addr1;
 	char *addr2;
+	char *addr3;
 
-	addr1 = (char*)ft_malloc(sizeof(char) * 65);
-	printf("%p\n", addr1);
 	addr2 = (char*)ft_malloc(sizeof(char) * 65);
-	printf("%p\n", addr2);
-	addr1 = (char*)ft_malloc(sizeof(char) * 24000);
-	printf("%p\n", addr1);
+	addr1 = (char*)ft_malloc(sizeof(char) * 65);
+	addr3 = (char*)ft_malloc(sizeof(char) * 24000);
+	show_alloc_mem();
+	ft_free(addr2);
 	ft_free(addr1);
+	show_alloc_mem();
 }

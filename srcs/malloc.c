@@ -45,16 +45,17 @@ static void	*get_available_chunk(t_page *heap, size_t size, t_chunk **ret_chunk)
 
 static void init_chunks(t_page *page_ptr, size_t chunks_nbr)
 {
-	void*	alloc_zone_start = (void*)page_ptr + sizeof(t_page) + (sizeof(t_chunk) * chunks_nbr);
-	size_t	chunk_size = (page_ptr->type == TINY_PAGE) ? TINY_CHUNK_SIZE : SMALL_CHUNK_SIZE;
-	t_chunk	*ptr;
+	static size_t	chunk_types_size[3] = {TINY_CHUNK_SIZE, SMALL_CHUNK_SIZE, 42};
+	t_chunk			*ptr;
+	size_t			chunk_size = chunk_types_size[page_ptr->type];
+	void			*alloc_zone_start = (void*)page_ptr + sizeof(t_page) + (sizeof(t_chunk) * chunks_nbr);
 
 	ptr = (t_chunk*)(page_ptr + sizeof(t_page));
 	for (size_t i = 0; i < chunks_nbr - 1; i++)
 	{
-		ptr[i] = (t_chunk){&(ptr[i + 1]), alloc_zone_start + (chunk_size * i), TRUE, 4242, 0};
+		ptr[i] = (t_chunk){&(ptr[i + 1]), alloc_zone_start + (chunk_size * i), chunk_size, TRUE, 4242, 0};
 	}
-	ptr[chunks_nbr - 1] = (t_chunk){NULL, alloc_zone_start + (chunk_size * (chunks_nbr - 1)), TRUE, 4242, 0};
+	ptr[chunks_nbr - 1] = (t_chunk){NULL, alloc_zone_start + (chunk_size * (chunks_nbr - 1)), chunk_size, TRUE, 4242, 0};
 	if (chunks_nbr == 1)
 		ptr->data += 8;
 }
@@ -108,10 +109,11 @@ static void	*get_mem_page(t_page **heap, size_t size)
 	return (set_new_page(heap, (t_page*)ptr, heap_size, size));
 }
 
-static void	*alloc_chunk(t_page *heap, t_chunk *chunk)
+static void	*alloc_chunk(t_page *heap, t_chunk *chunk, size_t size)
 {
 	heap->chunks_available--;
 	chunk->available = FALSE;
+	chunk->size = size;
 	return (chunk->data);
 }
 
@@ -133,7 +135,7 @@ void		*ft_malloc(size_t size)
 				return (NULL);
 			}
 		}
-		return (alloc_chunk(alloc_heap, chunk));
+		return (alloc_chunk(alloc_heap, chunk, size));
 	}
 	return (NULL);
 }

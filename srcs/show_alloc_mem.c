@@ -11,64 +11,32 @@
 /* ************************************************************************** */
 
 #include "libft_malloc.h"
+#include <stdio.h>
 
 extern t_page *g_heap;
 
-static void	print_hex(uint64_t nbr)
-{
-	char	result[19];
-	int		i;
-	int		c;
-
-	i = 0;
-	bzero(result, 17);
-	result[0] = '0'
-	result[1] = 'x'
-	while (i < 16)
-	{
-		c = (nbr & ((0xF << (15 - i) * 4))) >> ((15 - i) * 4);
-		result[i + 2] = "0123456789ABCDEF"[c];
-		i++;
-	}
-	result[i] = 0;
-	i = 0;
-	while (result[i] && result[i] == '0')
-		i++;
-	ft_putstr(ft_strcat(result + 2, result + i + 2));
-}
-
 static void	print_memory(t_page *heap)
 {
-	static char	*pages_sizes[3] = {"TINY", "SMALL", "LARGE"}
-	t_block		*block;
-	int			sum;
+	static char	*pages_sizes[3] = {"TINY", "SMALL", "LARGE"};
+	t_chunk		*chunk;
+	size_t		sum = 0;
 
-	sum = 0;
 	while (heap != NULL)
 	{
-		ft_putstr(pages_size[heap->type]);
-		ft_putstr(": ");
-		print_hex(heap);
-		block = heap->first_block;
-		write(1, "\n", 1);
-		while (block)
+		printf("%s : %p\n", pages_sizes[heap->type], heap);
+		chunk = heap->first_chunk;
+		while (chunk)
 		{
-			if (block->freed == FALSE)
+			if (chunk->available == FALSE)
 			{
-				print_hex(block + sizeof(t_block));
-				ft_putstr(" - ");
-				print_hex(block + sizeof(t_block) + block->size);
-				ft_putstr(" : ");
-				ft_putnbr(block->size);
-				ft_putstr(" octets\n");
-				sum += block->size;
+				printf("%p - %p : %zu bytes\n", chunk->data, chunk->data + chunk->size, chunk->size);
+				sum += chunk->size;
 			}
-			block = block->next;
+			chunk = chunk->next;
 		}
+		heap = heap->next;
 	}
-	ft_putstr("Total : ");
-	ft_putnbr(sum);
-	ft_putstr("octets\n");
+	printf("Total : %zu bytes\n", sum);
 }
 
 void	show_alloc_mem(void)
