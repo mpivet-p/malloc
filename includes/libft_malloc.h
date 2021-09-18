@@ -58,8 +58,7 @@ typedef struct	s_chunk
 	void			*data;
 	size_t			size;
 	uint8_t			available;
-	uint16_t		canary;
-	char			c;
+	char			c[3];
 }				t_chunk;
 
 #endif

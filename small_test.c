@@ -26,5 +26,6 @@ int	main(void)
 	show_alloc_mem();
 	ft_free(addr2);
 	ft_free(addr1);
+	printf("\n");
 	show_alloc_mem();
 }

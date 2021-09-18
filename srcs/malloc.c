@@ -12,7 +12,6 @@
 
 #include <sys/mman.h>
 #include "libft_malloc.h"
-#include "libft.h"
 #include <stdio.h>
 
 t_page *g_heap = NULL;
@@ -53,11 +52,9 @@ static void init_chunks(t_page *page_ptr, size_t chunks_nbr)
 	ptr = (t_chunk*)(page_ptr + sizeof(t_page));
 	for (size_t i = 0; i < chunks_nbr - 1; i++)
 	{
-		ptr[i] = (t_chunk){&(ptr[i + 1]), alloc_zone_start + (chunk_size * i), chunk_size, TRUE, 4242, 0};
+		ptr[i] = (t_chunk){&(ptr[i + 1]), alloc_zone_start + (chunk_size * i), chunk_size, TRUE, ""};
 	}
-	ptr[chunks_nbr - 1] = (t_chunk){NULL, alloc_zone_start + (chunk_size * (chunks_nbr - 1)), chunk_size, TRUE, 4242, 0};
-	if (chunks_nbr == 1)
-		ptr->data += 8;
+	ptr[chunks_nbr - 1] = (t_chunk){NULL, alloc_zone_start + (chunk_size * (chunks_nbr - 1)), chunk_size, TRUE, ""};
 }
 
 static void append_heap_ptr(t_page **heap, t_page *page_ptr)

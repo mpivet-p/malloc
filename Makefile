@@ -26,22 +26,20 @@ INC_NAME= libft_malloc.h
 SRC_NAME= malloc.c free.c utils.c show_alloc_mem.c #realloc.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
-INC= -I includes/ -I libft/inc/
+INC= -I includes/
 SRC= $(addprefix $(SRC_PATH), $(SRC_NAME))
 OBJ= $(addprefix $(OBJ_PATH), $(OBJ_NAME))
-LIBS= -L libft/ -lft
 
 .PHONY: all clean fclean re local
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@make -C libft
-	$(CC) $(CFLAGS) -shared -Wl,-soname,libft_malloc.so -o $(NAME) $(OBJ) $(INC) $(LIBS)
+	$(CC) $(CFLAGS) -shared -Wl,-soname,libft_malloc.so -o $(NAME) $(OBJ) $(INC)
 	ln -sf libft_malloc.so libft_malloc_$(HOSTTYPE).so
 
 test: $(OBJ)
-	@$(CC) $(CFLAGS) $(INC) $(OBJ) $(LIBS) -o small_test small_test.c 
+	@$(CC) $(CFLAGS) $(INC) $(OBJ) -o small_test small_test.c 
 	@./small_test
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
@@ -49,11 +47,9 @@ $(OBJ_PATH)%.o: $(SRC_PATH)%.c
 	$(CC) $(CFLAGS) -fPIC $(INC) -o $@ -c $<
 
 clean:
-	@make -C libft clean
 	@rm -rf $(OBJ_PATH) small_test
 
 fclean: clean
-	@make -C libft fclean
 	@rm -rf $(NAME) libft_malloc_$(HOSTTYPE).so
 
 re: fclean all
