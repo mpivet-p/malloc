@@ -12,6 +12,8 @@
 
 #include "libft_malloc.h"
 
+extern t_page *g_heap;
+
 static void	print_hex(uint64_t nbr)
 {
 	char	result[19];
@@ -71,5 +73,5 @@ static void	print_memory(t_page *heap)
 
 void	show_alloc_mem(void)
 {
-	
+	print_memory(g_heap);
 }

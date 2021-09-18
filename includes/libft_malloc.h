@@ -15,10 +15,11 @@
 
 # include <stddef.h>
 # include <stdint.h>
+# include <unistd.h>
 
-# define PAGE_SIZE			4096
-# define TINY_HEAP_SIZE		PAGE_SIZE * 3
-# define SMALL_HEAP_SIZE	PAGE_SIZE * 14
+# define TINY_HEAP_SIZE		((sizeof(t_page) + (100 * (sizeof(t_chunk) + TINY_CHUNK_SIZE))) / getpagesize() + 1) * getpagesize()
+# define SMALL_HEAP_SIZE	((sizeof(t_page) + (100 * (sizeof(t_chunk) + SMALL_CHUNK_SIZE))) / getpagesize() + 1) * getpagesize()
+
 
 # define MAP_ANONYMOUS		0x20
 
@@ -36,7 +37,7 @@ void	*ft_malloc(size_t size);
 void	ft_free(void *ptr);
 /*void	*realloc(void *ptr, size_t size);
 */
-size_t	get_page_size(size_t size);
+size_t	get_mempage_size(size_t size);
 int		get_page_type(size_t size);
 
 typedef struct	s_page

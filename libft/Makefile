@@ -12,7 +12,7 @@
 
 NAME= libft.a
 CC= clang
-CFLAGS= -Wall -Wextra -Werror -std=c90
+CFLAGS= -Wall -Wextra -Werror -std=gnu99
 
 INC_PATH= inc/
 SRC_PATH= src/

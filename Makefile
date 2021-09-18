@@ -16,7 +16,7 @@ endif
 
 NAME= libft_malloc.so
 CC= clang
-CFLAGS= -Wall -Wextra -Werror -std=c99 -g
+CFLAGS= -Wall -Wextra -Werror -std=gnu99 -g
 
 INC_PATH= includes/
 SRC_PATH= srcs/
@@ -41,7 +41,7 @@ $(NAME): $(OBJ)
 	ln -sf libft_malloc.so libft_malloc_$(HOSTTYPE).so
 
 test: $(OBJ)
-	@$(CC) $(INC) -g $(OBJ) $(LIBS) -o small_test small_test.c 
+	@$(CC) $(CFLAGS) $(INC) $(OBJ) $(LIBS) -o small_test small_test.c 
 	@./small_test
 
 $(OBJ_PATH)%.o: $(SRC_PATH)%.c
