@@ -119,20 +119,17 @@ void		*ft_malloc(size_t size)
 	t_page			*alloc_heap = NULL;
 	t_chunk			*chunk = NULL;
 
-	if (size > 0)
+	if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
 	{
+		if (get_mem_page(&g_heap, size) == NULL)
+		{
+			return (NULL);
+		}
 		if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
 		{
-			if (get_mem_page(&g_heap, size) == NULL)
-			{
-				return (NULL);
-			}
-			if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
-			{
-				return (NULL);
-			}
+			return (NULL);
 		}
-		return (alloc_chunk(alloc_heap, chunk, size));
 	}
+	return (alloc_chunk(alloc_heap, chunk, size));
 	return (NULL);
 }

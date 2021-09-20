@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft_malloc.h"
+#include <stdio.h>
 
 extern t_page *g_heap;
 
@@ -20,19 +21,20 @@ void	*ft_realloc(void *ptr, size_t size)
 	t_chunk	*chunk;
 	t_page	*page_ptr;
 
-	if ((chunk = get_chunk(ptr, &page_ptr)) != NULL)
+	if (ptr != NULL && (chunk = get_chunk(ptr, &page_ptr)) != NULL && size > 0)
 	{
-		if (size > sizes[page_ptr->type])
+		if (size <= sizes[page_ptr->type])
 		{
 			chunk->size = size;
-			//allocate more space
+			return (ptr);
 		}
 		else 
 		{
 			ft_free(ptr);
 			return (ft_malloc(size));
-			//free + new malloc
 		}
 	}
+	else if (ptr == NULL)
+		return (ft_malloc(size));
 	return (NULL);
 }

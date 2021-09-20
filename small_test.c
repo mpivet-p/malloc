@@ -20,11 +20,18 @@ int	main(void)
 	char *addr2;
 	char *addr3;
 
-	addr1 = malloc(8);
+	addr1 = malloc(0);
 	printf("%p\n", addr1);
-	addr2 = realloc(addr1, 257);
+	addr2 = realloc(addr1, 0);
 	printf("%p\n", addr2);
 	addr3 = realloc(addr2, 150000);
+	printf("%p\n", addr3);
+
+	addr1 = ft_malloc(0);
+	printf("%p\n", addr1);
+	addr2 = ft_realloc(addr1, 0);
+	printf("%p\n", addr2);
+	addr3 = ft_realloc(addr2, 150000);
 	printf("%p\n", addr3);
 	//addr2 = (char*)ft_malloc(sizeof(char) * 65);
 	//addr1 = (char*)ft_malloc(sizeof(char) * 65);
