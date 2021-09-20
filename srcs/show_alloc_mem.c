@@ -15,6 +15,32 @@
 
 extern t_page *g_heap;
 
+static void sort_pages(void)
+{
+	t_page	*ptr = g_heap;
+	t_page	*prev = NULL;
+	t_page	*next;
+
+	while (ptr && ptr->next)
+	{
+		if (ptr > ptr->next)
+		{
+			next = ptr->next;
+			if (ptr == g_heap)
+				g_heap = next;
+			else
+				prev->next = next;
+			ptr->next = next->next;
+			next->next = ptr;
+			ptr = g_heap;
+			prev = NULL;
+			continue ;
+		}
+		prev = ptr;
+		ptr = ptr->next;
+	}
+}
+
 static void	print_memory(t_page *heap)
 {
 	static char	*pages_sizes[3] = {"TINY", "SMALL", "LARGE"};
@@ -41,5 +67,6 @@ static void	print_memory(t_page *heap)
 
 void	show_alloc_mem(void)
 {
+	sort_pages();
 	print_memory(g_heap);
 }
