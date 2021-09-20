@@ -33,13 +33,6 @@
 # define TRUE	1
 # define FALSE	0
 
-void	*ft_malloc(size_t size);
-void	ft_free(void *ptr);
-void	show_alloc_mem(void);
-/*void	*realloc(void *ptr, size_t size);*/
-size_t	get_mempage_size(size_t size);
-int		get_page_type(size_t size);
-
 typedef struct	s_page
 {
 	struct s_page	*next;
@@ -60,5 +53,13 @@ typedef struct	s_chunk
 	uint8_t			available;
 	char			c[3];
 }				t_chunk;
+
+void	*ft_malloc(size_t size);
+void	ft_free(void *ptr);
+void	show_alloc_mem(void);
+void	*ft_realloc(void *ptr, size_t size);
+size_t	get_mempage_size(size_t size);
+int		get_page_type(size_t size);
+t_chunk *get_chunk(void *ptr, t_page **ret_ptr);
 
 #endif

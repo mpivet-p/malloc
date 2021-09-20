@@ -23,7 +23,7 @@ SRC_PATH= srcs/
 OBJ_PATH= obj/
 
 INC_NAME= libft_malloc.h
-SRC_NAME= malloc.c free.c utils.c show_alloc_mem.c #realloc.c
+SRC_NAME= malloc.c free.c utils.c show_alloc_mem.c realloc.c
 OBJ_NAME= $(SRC_NAME:.c=.o)
 
 INC= -I includes/
