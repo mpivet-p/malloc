@@ -50,9 +50,16 @@ static void init_chunks(t_page *page_ptr, size_t chunks_nbr)
 	void			*alloc_zone_start = (void*)page_ptr + sizeof(t_page) + (sizeof(t_chunk) * chunks_nbr);
 
 	ptr = (t_chunk*)(page_ptr + sizeof(t_page));
+	write(1, "==========\n", 11);
+	puthex((uint64_t)page_ptr);
 	for (size_t i = 0; i < chunks_nbr - 1; i++)
 	{
-		ptr[i] = (t_chunk){&(ptr[i + 1]), alloc_zone_start + (chunk_size * i), chunk_size, TRUE, ""};
+		ptr[i] = (t_chunk){ptr + i + 1, alloc_zone_start + (chunk_size * i), chunk_size, TRUE, ""};
+		ft_putnbr(i);
+		write(1, "\n", 1);
+		puthex((uint64_t)(&ptr[i]));
+		puthex((uint64_t)(ptr[i].data));
+		write(1, "\n", 1);
 	}
 	ptr[chunks_nbr - 1] = (t_chunk){NULL, alloc_zone_start + (chunk_size * (chunks_nbr - 1)), chunk_size, TRUE, ""};
 }
@@ -114,13 +121,17 @@ static void	*alloc_chunk(t_page *heap, t_chunk *chunk, size_t size)
 	return (chunk->data);
 }
 
-void		*ft_malloc(size_t size)
+void		*malloc(size_t size)
 {
 	t_page			*alloc_heap = NULL;
 	t_chunk			*chunk = NULL;
+	//tmp
+	void			*tmp;
 
+	printk("malloc(%d) %p\n", size, g_heap);
 	if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
 	{
+		write(1, "new_page\n", 9);
 		if (get_mem_page(&g_heap, size) == NULL)
 		{
 			return (NULL);
@@ -130,6 +141,12 @@ void		*ft_malloc(size_t size)
 			return (NULL);
 		}
 	}
-	return (alloc_chunk(alloc_heap, chunk, size));
-	return (NULL);
+	tmp = alloc_chunk(alloc_heap, chunk, size);
+	ft_putnbr((((t_page*)alloc_heap)->chunks_available));
+	write(1, "\n", 1);
+	puthex((uint64_t)chunk);
+	puthex((uint64_t)(chunk->data));
+	//puthex((uint64_t)tmp);
+	write(1, "\nreturn\n\n", 9);
+	return (tmp);
 }

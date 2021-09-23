@@ -17,11 +17,12 @@
 # include <stdint.h>
 # include <unistd.h>
 
-# define TINY_HEAP_SIZE		((sizeof(t_page) + (100 * (sizeof(t_chunk) + TINY_CHUNK_SIZE))) / getpagesize() + 1) * getpagesize()
-# define SMALL_HEAP_SIZE	((sizeof(t_page) + (100 * (sizeof(t_chunk) + SMALL_CHUNK_SIZE))) / getpagesize() + 1) * getpagesize()
+//# define TINY_HEAP_SIZE		((sizeof(t_page) + (100 * (sizeof(t_chunk) + TINY_CHUNK_SIZE))) / getpagesize() + 1) * getpagesize()
+//# define SMALL_HEAP_SIZE	((sizeof(t_page) + (100 * (sizeof(t_chunk) + SMALL_CHUNK_SIZE))) / getpagesize() + 1) * getpagesize()
 
+# define TINY_HEAP_SIZE		4 * getpagesize()
+# define SMALL_HEAP_SIZE	14 *getpagesize()
 
-# define MAP_ANONYMOUS		0x20
 
 # define TINY_CHUNK_SIZE	64
 # define SMALL_CHUNK_SIZE	512
@@ -54,12 +55,17 @@ typedef struct	s_chunk
 	char			c[3];
 }				t_chunk;
 
-void	*ft_malloc(size_t size);
-void	ft_free(void *ptr);
+void	*malloc(size_t size);
+void	free(void *ptr);
 void	show_alloc_mem(void);
-void	*ft_realloc(void *ptr, size_t size);
-size_t	get_mempage_size(size_t size);
-int		get_page_type(size_t size);
+void	*realloc(void *ptr, size_t size);
+void	*calloc(size_t nmemb, size_t size);
+
 t_chunk *get_chunk(void *ptr, t_page **ret_ptr);
+size_t	get_mempage_size(size_t size);
+void	ft_putnbr(int n);
+void	puthex(uint64_t n);
+int		get_page_type(size_t size);
+int		printk(const char * format, ...);
 
 #endif

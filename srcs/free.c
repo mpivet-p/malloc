@@ -27,6 +27,7 @@ void	clean_pages(void)
 		next_page = ptr->next;
 		if (ptr->chunks == ptr->chunks_available)
 		{
+			write(1, "need munmap\n", 12);
 			if (ptr == g_heap)
 			{
 				g_heap = ptr->next;
@@ -34,6 +35,7 @@ void	clean_pages(void)
 			else
 				prev_page->next = ptr->next;
 			munmap((void*)ptr, ptr->size);
+			write(1, "munmap done\n", 12);
 		}
 		else
 			prev_page = ptr;
@@ -41,15 +43,21 @@ void	clean_pages(void)
 	}
 }
 
-void	ft_free(void *ptr)
+void	free(void *ptr)
 {
 	t_chunk	*chunk;
 	t_page	*page_ptr;
 
-	if ((chunk = get_chunk(ptr, &page_ptr)) != NULL)
-	{
-		chunk->available = TRUE;
-		page_ptr->chunks_available++;
-	}
-	clean_pages();
+	write(1, "New free\n", 9);
+	(void)ptr;
+	(void)chunk;
+	(void)page_ptr;
+	//if ((chunk = get_chunk(ptr, &page_ptr)) != NULL)
+	//{
+	//	write(1, "get_chunk succeed\n", 14);
+	//	chunk->available = TRUE;
+	//	page_ptr->chunks_available++;
+	//}
+	//write(1, "end free\n", 9);
+	//clean_pages();
 }
