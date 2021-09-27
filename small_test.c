@@ -34,8 +34,8 @@ int	main(void)
 		addr1 = malloc(8);
 		memset(addr1, 42, 8);
 	}
-	//addr2 = malloc(80);
-	//addr3 = malloc(800);
+	addr2 = malloc(80);
+	addr3 = malloc(800);
 	//free(addr1);
 	//free(addr2);
 	//free(addr3);

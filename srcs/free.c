@@ -50,21 +50,21 @@ void	clean_pages(void)
 
 void	free(void *ptr)
 {
-	t_chunk	*chunk;
-	t_page	*page_ptr;
+	//t_chunk	*chunk;
+	//t_page	*page_ptr;
 
 	printk("free(%p)\n", ptr);
-	if ((chunk = get_chunk(ptr, &page_ptr)) != NULL && (page_ptr->type == LARGE_PAGE || page_ptr->type == TINY_PAGE || page_ptr->type == SMALL_PAGE))
-	{
-		printk("%p %p %p %p\n", ptr, page_ptr, chunk, chunk->data);
-		chunk->available = TRUE;
-		chunk->size = 0;
-		page_ptr->chunks_available += 1;
-	}
-	else
-	{
-		printk("PTR ERROR %p\n", chunk);
-	}
-	clean_pages();
+	//if ((chunk = get_chunk(ptr, &page_ptr)) != NULL && (page_ptr->type == LARGE_PAGE || page_ptr->type == TINY_PAGE || page_ptr->type == SMALL_PAGE))
+	//{
+	//	printk("%p %p %p %p\n", ptr, page_ptr, chunk, chunk->data);
+	//	chunk->available = TRUE;
+	//	chunk->size = 0;
+	//	page_ptr->chunks_available += 1;
+	//}
+	//else
+	//{
+	//	printk("PTR ERROR %p\n", chunk);
+	//}
+	//clean_pages();
 	printk("== free return ==\n");
 }

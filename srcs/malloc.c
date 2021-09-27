@@ -66,7 +66,7 @@ static void init_chunks(t_page *page_ptr, size_t chunks_nbr)
 	static size_t	chunk_types_size[3] = {TINY_CHUNK_SIZE, SMALL_CHUNK_SIZE, 42};
 	t_chunk			*ptr;
 	size_t			chunk_size = chunk_types_size[page_ptr->type];
-	void			*alloc_zone_start = (void*)page_ptr + sizeof(t_page) + (sizeof(t_chunk) * chunks_nbr);
+	void			*alloc_zone_start = (void*)page_ptr + sizeof(t_page) + (sizeof(t_chunk) * chunks_nbr) + 0x10;
 
 	//printk("chunks_nbr = %d size %d alloc zone = %p\n", chunks_nbr, alloc_zone_start - (void*)page_ptr, alloc_zone_start);
 	ptr = page_ptr->first_chunk;
@@ -145,7 +145,7 @@ void		*malloc(size_t size)
 
 	void			*tmp;
 
-	printk("malloc(%d) %p\n", size, g_heap);
+	printk("malloc(%d) %p %p\n", size, g_heap, &g_heap);
 	//debug(g_heap);
 	//printk("====================\n");
 	if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
@@ -164,8 +164,10 @@ void		*malloc(size_t size)
 	}
 	tmp = alloc_chunk(alloc_heap, chunk, size);
 	//debug(alloc_heap);
-	printk("%d chunks index, page = %p, &chunk = %p, chunk->data (malloc return) = %p, chunk->size %d, chunk->next %p [%s]\n", (((t_page*)alloc_heap)->chunks) - (((t_page*)alloc_heap)->chunks_available), alloc_heap, chunk, tmp, chunk->size, chunk->next, chunk->c);
-	if (tmp == NULL)
-		printk("\nALERT\n\n");
+	//printk("%d chunks index, page = %p, &chunk = %p, chunk->data (malloc return) = %p, chunk->size %d, chunk->next %p [%s]\n", (((t_page*)alloc_heap)->chunks) - (((t_page*)alloc_heap)->chunks_available), alloc_heap, chunk, tmp, chunk->size, chunk->next, chunk->c);
+	printk("Starting segfaulter\n");
+	segfaulter();
+	read_and_write(tmp, size);
+	printk("Segfaulter done addr = %p\n", tmp);
 	return (tmp);
 }

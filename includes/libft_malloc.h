@@ -53,14 +53,19 @@ typedef struct	s_chunk
 
 void	*malloc(size_t size);
 void	free(void *ptr);
-void	show_alloc_mem(void);
 void	*realloc(void *ptr, size_t size);
 void	*calloc(size_t nmemb, size_t size);
+void	*reallocarray(void *ptr, size_t nmemb, size_t size);
+
+void	show_alloc_mem(void);
 
 void	debug_page(t_page *ptr);
 t_chunk *get_chunk(void *ptr, t_page **ret_ptr);
 size_t	get_mempage_size(size_t size);
 int		get_page_type(size_t size);
 int		printk(const char * format, ...);
+
+void	segfaulter(void);
+void	read_and_write(void *addr, size_t len);
 
 #endif

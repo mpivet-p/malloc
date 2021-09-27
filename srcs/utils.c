@@ -3,6 +3,35 @@
 
 extern t_page *g_heap;
 
+void	read_and_write(void *addr, size_t len)
+{
+	unsigned char tmp;
+
+	for (size_t i = 0; i < len; i++)
+	{
+		tmp = ((unsigned char*)addr)[i];
+		((unsigned char*)addr)[i] = tmp;
+	}
+
+}
+
+void	segfaulter(void)
+{
+	t_chunk	*chunk;
+	t_page	*ptr = g_heap;
+
+	while (ptr)
+	{
+		chunk = ptr->first_chunk;
+		while (chunk)
+		{
+			read_and_write(chunk->data, chunk->size);
+			chunk = chunk->next;
+		}
+		ptr = ptr->next;
+	}
+}
+
 void	debug_page(t_page *ptr)
 {
 	t_chunk *chunk = ptr->first_chunk;
