@@ -27,7 +27,7 @@ void	clean_pages(void)
 		next_page = ptr->next;
 		if (ptr->chunks == ptr->chunks_available)
 		{
-			printk("need munmap for page %p\n", ptr);
+			//printk("need munmap for page %p\n", ptr);
 			//debug_page(ptr);
 			if (ptr == g_heap)
 			{
@@ -38,7 +38,7 @@ void	clean_pages(void)
 				prev_page->next = ptr->next;
 			}
 			munmap((void*)ptr, ptr->size);
-			printk("munmap done\n");
+			//printk("munmap done\n");
 		}
 		else
 		{
@@ -50,21 +50,17 @@ void	clean_pages(void)
 
 void	free(void *ptr)
 {
-	//t_chunk	*chunk;
-	//t_page	*page_ptr;
+	t_chunk	*chunk;
+	t_page	*page_ptr;
 
 	printk("free(%p)\n", ptr);
-	//if ((chunk = get_chunk(ptr, &page_ptr)) != NULL && (page_ptr->type == LARGE_PAGE || page_ptr->type == TINY_PAGE || page_ptr->type == SMALL_PAGE))
-	//{
+	if (ptr && (chunk = get_chunk(ptr, &page_ptr)) != NULL && page_ptr)
+	{
 	//	printk("%p %p %p %p\n", ptr, page_ptr, chunk, chunk->data);
-	//	chunk->available = TRUE;
-	//	chunk->size = 0;
-	//	page_ptr->chunks_available += 1;
-	//}
-	//else
-	//{
-	//	printk("PTR ERROR %p\n", chunk);
-	//}
-	//clean_pages();
-	printk("== free return ==\n");
+		chunk->available = TRUE;
+		chunk->size = 0;
+		page_ptr->chunks_available += 1;
+		clean_pages();
+	}
+	//printk("== free return ==\n");
 }

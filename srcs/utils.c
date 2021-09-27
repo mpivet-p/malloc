@@ -84,6 +84,7 @@ size_t	get_mempage_size(size_t size)
 		return (TINY_HEAP_SIZE);
 	else if (size <= SMALL_CHUNK_SIZE)
 		return (SMALL_HEAP_SIZE);
+	size += sizeof(t_page) + sizeof(t_chunk) + 0x10;
 	return (((size / getpagesize()) + 1) * getpagesize());
 }
 

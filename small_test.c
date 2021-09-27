@@ -31,11 +31,13 @@ int	main(void)
 	}*/
 	for (int i = 0; i < 15000; i++)
 	{
-		addr1 = malloc(8);
-		memset(addr1, 42, 8);
+		addr1 = malloc(i);
+		memset(addr1, 42, i);
+		addr2 = malloc(i * 80 % 512);
+		memset(addr2, 42, i * 80 % 512);
+		addr3 = malloc(i * 80);
+		memset(addr3, 42, i * 80);
 	}
-	addr2 = malloc(80);
-	addr3 = malloc(800);
 	//free(addr1);
 	//free(addr2);
 	//free(addr3);

@@ -21,7 +21,7 @@ void	*realloc(void *ptr, size_t size)
 	t_chunk	*chunk;
 	t_page	*page_ptr;
 
-	printk("realloc(%d)\n", size);
+	//printk("realloc(%d)\n", size);
 	if (ptr != NULL && (chunk = get_chunk(ptr, &page_ptr)) != NULL && size > 0)
 	{
 		if (size <= sizes[page_ptr->type])
@@ -37,6 +37,6 @@ void	*realloc(void *ptr, size_t size)
 	}
 	else if (ptr == NULL)
 		return (malloc(size));
-	printk("== realloc return ==\n");
+	//printk("== realloc return ==\n");
 	return (NULL);
 }

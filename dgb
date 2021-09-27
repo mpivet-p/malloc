@@ -1,3 +1,0 @@
-malloc(552) 0x0 0x7f5b0818d110
-mmap(4096) 0x7f5b083b4000
-Starting segfaulter

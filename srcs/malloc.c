@@ -15,7 +15,7 @@
 #include <stdio.h>
 
 t_page *g_heap = NULL;
-
+/*
 void	debug(t_page *ptr)
 {
 	if (ptr == NULL)
@@ -34,7 +34,7 @@ void	debug(t_page *ptr)
 		}
 	}
 }
-
+*/
 static void	*get_available_chunk(t_page *heap, size_t size, t_chunk **ret_chunk)
 {
 	size_t	page_type;
@@ -126,7 +126,7 @@ static void	*get_mem_page(t_page **heap, size_t size)
 	heap_size = get_mempage_size(size);
 	if ((ptr = mmap(NULL, heap_size, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0)) == MAP_FAILED)
 		return (NULL);
-	printk("mmap(%d) %p\n", heap_size, ptr);
+	//printk("mmap(%d) %p\n", heap_size, ptr);
 	return (set_new_page(heap, (t_page*)ptr, heap_size, size));
 }
 
@@ -142,12 +142,10 @@ void		*malloc(size_t size)
 {
 	t_page			*alloc_heap = NULL;
 	t_chunk			*chunk = NULL;
-
 	void			*tmp;
 
-	printk("malloc(%d) %p %p\n", size, g_heap, &g_heap);
+	printk("malloc(%d)\n", size);
 	//debug(g_heap);
-	//printk("====================\n");
 	if ((alloc_heap = get_available_chunk(g_heap, size, &chunk)) == NULL)
 	{
 		//printk("NO PAGE AVAILABLE\n");
@@ -162,10 +160,9 @@ void		*malloc(size_t size)
 			return (NULL);
 		}
 	}
-	tmp = alloc_chunk(alloc_heap, chunk, size);
 	//debug(alloc_heap);
 	//printk("%d chunks index, page = %p, &chunk = %p, chunk->data (malloc return) = %p, chunk->size %d, chunk->next %p [%s]\n", (((t_page*)alloc_heap)->chunks) - (((t_page*)alloc_heap)->chunks_available), alloc_heap, chunk, tmp, chunk->size, chunk->next, chunk->c);
-	printk("Starting segfaulter\n");
+	tmp = alloc_chunk(alloc_heap, chunk, size);
 	segfaulter();
 	read_and_write(tmp, size);
 	printk("Segfaulter done addr = %p\n", tmp);

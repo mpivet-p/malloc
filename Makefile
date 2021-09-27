@@ -35,7 +35,7 @@ OBJ= $(addprefix $(OBJ_PATH), $(OBJ_NAME))
 all: $(NAME)
 
 $(NAME): $(OBJ)#-Wl,-soname,
-	$(CC) $(CFLAGS) -shared -o libft_malloc.so -o $(NAME) $(OBJ) $(INC)
+	$(CC) $(CFLAGS) -shared -o $(NAME) $(OBJ) $(INC)
 	ln -sf libft_malloc.so libft_malloc_$(HOSTTYPE).so
 
 test: $(OBJ)
