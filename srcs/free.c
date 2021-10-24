@@ -38,6 +38,8 @@ void	clean_pages(void)
 				prev_page->next = ptr->next;
 			}
 			munmap((void*)ptr, ptr->size);
+			ptr = g_heap;
+			continue ;
 			//printk("munmap done\n");
 		}
 		else
